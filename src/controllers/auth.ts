@@ -1,0 +1,29 @@
+import type { Request, Response } from "express";
+import { createUser } from "../services/user.js";
+import { signupSchema } from "../schemas/signup-schema.js";
+import z from "zod";
+
+export const signup = async (req: Request, res: Response) => {
+    const data = signupSchema.safeParse(req.body);
+    if (!data.success) {
+        return res.status(400).json({
+            error: z.flattenError(data.error).fieldErrors
+        })
+    }
+
+    try {
+        const user = await createUser(
+            data.data.name,
+            data.data.email,
+            data.data.password
+        );
+
+        return res.status(201).json(user);
+        
+    } catch (error) {
+        return res.status(400).json({
+            error: error instanceof Error
+                ? error.message : 'Erro interno'
+        })
+    }
+}
