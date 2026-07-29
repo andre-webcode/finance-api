@@ -27,3 +27,25 @@ export const createUser = async (name: string, email: string, password: string) 
 
     return user;
 }
+
+type authUserProps = {
+    email: string;
+    password: string;
+}
+export const authUser = async ({ email, password }: authUserProps) => {
+    const user = await prisma.user.findUnique({
+        where: { email }
+    })
+    if (!user) { throw new Error('Email ou senha invalidos') };
+
+    const passwordMatch = await bcrypt.compare(
+        password,
+        user.password
+    );
+    if (!passwordMatch) {
+        throw new Error('Email ou senha inválidos');
+    }
+
+    const {password: _, ...userWithoutPassword} = user;
+    return userWithoutPassword;
+}
