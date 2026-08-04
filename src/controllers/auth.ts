@@ -41,6 +41,7 @@ export const signin = async (req:Request, res:Response) => {
     if(!user){
         res.json({error:'Acesso negado'})
         return;
+        
     }
 
     return res.status(200).json(user);
