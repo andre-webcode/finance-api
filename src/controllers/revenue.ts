@@ -1,13 +1,12 @@
-import type {  Response } from "express";
-import { createRevenue } from "../services/revenue.js";
+import type { Response } from "express";
+import { createRevenue, findUserRevenues } from "../services/revenue.js";
 import type { ExtendedRequest } from "../types/extendedRequest.js";
-import { error } from "node:console";
 
-export const revenuePost = async (req:ExtendedRequest, res: Response) => {
+export const revenuePost = async (req: ExtendedRequest, res: Response) => {
     const { description, value, category, date } = req.body;
 
-    if(!req.user){
-        return res.status(401).json({error:'Usuario nao autenticado'})
+    if (!req.user) {
+        return res.status(401).json({ error: 'Usuario nao autenticado' })
     }
     const userId = req.user.id;
 
@@ -21,4 +20,18 @@ export const revenuePost = async (req:ExtendedRequest, res: Response) => {
 
     return res.status(201).json(revenue);
 
+}
+
+export const getRevenues = async (req: ExtendedRequest, res: Response) => {
+    if(!req.user){
+        return res.status(401).json({
+            error:"Usuario não autenticado"
+        })
+    }
+
+    const userId = req.user.id;
+
+    const revenues = await findUserRevenues(userId);
+
+    return res.json(revenues);
 }

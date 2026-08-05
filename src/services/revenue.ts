@@ -10,7 +10,7 @@ type Props = {
 
 export const createRevenue = async ({ description, value, category, date, userId }: Props) => {
     const revenue = await prisma.revenue.create({
-        data:{
+        data: {
             description,
             value,
             category,
@@ -19,4 +19,14 @@ export const createRevenue = async ({ description, value, category, date, userId
         }
     })
     return revenue;
+}
+
+export const findUserRevenues = async (userId: number) => {
+    const revenues = await prisma.revenue.findMany({
+        where:{
+            userId
+        }
+    });
+
+    return revenues;
 }

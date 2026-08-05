@@ -11,4 +11,5 @@ mainRouter.get('/ping',pingController.ping)
 mainRouter.post('/signup',userController.signup);
 mainRouter.post('/signin',userController.signin);
 
-mainRouter.post('/revenue',PrivateRoute, revenueController.revenuePost)
+mainRouter.post('/revenue',PrivateRoute, revenueController.revenuePost);
+mainRouter.get('/revenue',PrivateRoute, revenueController.getRevenues)
