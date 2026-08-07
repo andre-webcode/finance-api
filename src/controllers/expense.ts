@@ -1,7 +1,6 @@
 import type { Response } from "express";
 import type { ExtendedRequest } from "../types/extendedRequest.js";
-import { createExpense, getExpenses, updateExpense } from "../services/expense.js";
-import { error } from "node:console";
+import { createExpense, deleteExpense, getExpenses, updateExpense } from "../services/expense.js";
 
 export const expensePost = async (req: ExtendedRequest, res: Response) => {
     const { description, value, category, date } = req.body;
@@ -45,6 +44,27 @@ export const expensePut = async (req: ExtendedRequest, res: Response) => {
         return res.json({
             message: "Despesa atualizada com sucesso",
             expense
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            error: error instanceof Error ? error.message : "Erro interno"
+        });
+    }
+}
+
+export const expenseDelete = async (req: ExtendedRequest, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const expense = await deleteExpense(
+            Number(id),
+            req.user!.id,
+        );
+
+        return res.json({
+            message: "Despesa apagada com sucesso"
+            
         });
 
     } catch (error) {

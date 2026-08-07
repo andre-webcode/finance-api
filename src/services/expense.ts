@@ -68,3 +68,28 @@ export const updateExpense = async ({id, userId, description, value, category, d
 
     return updateExpense;
 }
+
+
+export const deleteExpense = async (id:number, userId:number) => {
+    const expense = await prisma.expense.findUnique({
+        where:{
+            id
+        }
+    });
+
+    if(!expense){
+        throw new Error("Despesa não encontrada");
+    }
+
+    if(expense.userId !== userId){
+        throw new Error("Sem permissão");
+    }
+
+    const removeExpense = await prisma.expense.delete({
+        where:{
+            id
+        }
+    });
+
+    return removeExpense;
+}

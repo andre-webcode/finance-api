@@ -20,3 +20,4 @@ mainRouter.delete('/revenue/:id',PrivateRoute, revenueController.revenueDelete);
 mainRouter.post('/expense',PrivateRoute, expenseController.expensePost);
 mainRouter.get('/expense',PrivateRoute, expenseController.expenseGet);
 mainRouter.put('/expense/:id',PrivateRoute, expenseController.expensePut);
+mainRouter.delete('/expense/:id',PrivateRoute, expenseController.expenseDelete);
