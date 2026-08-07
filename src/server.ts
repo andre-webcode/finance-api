@@ -14,4 +14,4 @@ server.use(mainRouter);
 
 server.listen(3000, () => {
     console.log('Servidor rodando.....')
-})
+});

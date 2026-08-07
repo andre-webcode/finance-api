@@ -10,6 +10,7 @@ export const PrivateRoute = async (req: ExtendedRequest, res: Response, next: Ne
             error: 'Token nao informado'
         })
     }
+
     const token = authorization.split(' ')[1];
 
     if (!token) {
@@ -23,6 +24,7 @@ export const PrivateRoute = async (req: ExtendedRequest, res: Response, next: Ne
         req.user = decoded;
 
         next();
+        
     } catch (error) {
         return res.status(401).json({
             error: 'Token invalido'

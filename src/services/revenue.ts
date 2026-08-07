@@ -23,10 +23,48 @@ export const createRevenue = async ({ description, value, category, date, userId
 
 export const findUserRevenues = async (userId: number) => {
     const revenues = await prisma.revenue.findMany({
-        where:{
+        where: {
             userId
         }
     });
 
     return revenues;
+}
+
+type UpdateProps = {
+    id: number;
+    userId: number;
+    description: string;
+    value: number;
+    category: string;
+    date: Date;
+}
+export const updateRevenue = async ({ id, userId, description, value, category, date }: UpdateProps) => {
+    const revenue = await prisma.revenue.findUnique({
+        where: {
+            id
+        }
+    });
+
+    if (!revenue) {
+        throw new Error("Receita não encontrada");
+    }
+
+    if (revenue.userId !== userId) {
+        throw new Error("sem permissão")
+    }
+
+    const updateRevenue = await prisma.revenue.update({
+        where: {
+            id
+        },
+        data: {
+            description,
+            value,
+            category,
+            date
+        }
+    });
+
+    return updateRevenue;
 }

@@ -12,4 +12,5 @@ mainRouter.post('/signup',userController.signup);
 mainRouter.post('/signin',userController.signin);
 
 mainRouter.post('/revenue',PrivateRoute, revenueController.revenuePost);
-mainRouter.get('/revenue',PrivateRoute, revenueController.getRevenues)
+mainRouter.get('/revenue',PrivateRoute, revenueController.getRevenues);
+mainRouter.put('/revenue/:id',PrivateRoute, revenueController.revenuePut);

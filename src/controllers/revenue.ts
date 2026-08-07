@@ -1,5 +1,5 @@
 import type { Response } from "express";
-import { createRevenue, findUserRevenues } from "../services/revenue.js";
+import { createRevenue, findUserRevenues, updateRevenue } from "../services/revenue.js";
 import type { ExtendedRequest } from "../types/extendedRequest.js";
 
 export const revenuePost = async (req: ExtendedRequest, res: Response) => {
@@ -23,9 +23,9 @@ export const revenuePost = async (req: ExtendedRequest, res: Response) => {
 }
 
 export const getRevenues = async (req: ExtendedRequest, res: Response) => {
-    if(!req.user){
+    if (!req.user) {
         return res.status(401).json({
-            error:"Usuario não autenticado"
+            error: "Usuario não autenticado"
         })
     }
 
@@ -34,4 +34,24 @@ export const getRevenues = async (req: ExtendedRequest, res: Response) => {
     const revenues = await findUserRevenues(userId);
 
     return res.json(revenues);
+}
+
+export const revenuePut = async (req: ExtendedRequest, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const revenue = await updateRevenue({
+            id: Number(id),
+            userId: req.user!.id,
+            ...req.body
+        });
+
+        return res.json( revenue );
+
+    } catch (error) {
+        return res.status(400).json({
+            error: error instanceof Error ? error.message : "Erro interno"
+        });
+    }
+
 }
