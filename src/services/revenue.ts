@@ -68,3 +68,28 @@ export const updateRevenue = async ({ id, userId, description, value, category, 
 
     return updateRevenue;
 }
+
+export const deleteRevenue = async (id: number, userId: number) => {
+    const revenue = await prisma.revenue.findUnique({
+        where: {
+            id
+        }
+    });
+
+    if (!revenue) {
+        throw new Error("Receita não encontrada");
+    }
+
+    if (revenue.userId !== userId) {
+        throw new Error("sem permissão")
+    }
+
+    const deletedRevenue = await prisma.revenue.delete({
+        where: {
+            id
+        }
+    });
+
+    return deletedRevenue;
+
+}

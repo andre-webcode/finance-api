@@ -1,5 +1,5 @@
 import type { Response } from "express";
-import { createRevenue, findUserRevenues, updateRevenue } from "../services/revenue.js";
+import { createRevenue, deleteRevenue, findUserRevenues, updateRevenue } from "../services/revenue.js";
 import type { ExtendedRequest } from "../types/extendedRequest.js";
 
 export const revenuePost = async (req: ExtendedRequest, res: Response) => {
@@ -46,7 +46,7 @@ export const revenuePut = async (req: ExtendedRequest, res: Response) => {
             ...req.body
         });
 
-        return res.json( revenue );
+        return res.json(revenue);
 
     } catch (error) {
         return res.status(400).json({
@@ -54,4 +54,22 @@ export const revenuePut = async (req: ExtendedRequest, res: Response) => {
         });
     }
 
+}
+
+export const revenueDelete = async (req: ExtendedRequest, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const revenue = await deleteRevenue(
+            Number(id),
+            req.user!.id,
+        );
+
+        return res.json({message:"Receita apagada com sucesso"});
+
+    } catch (error){
+        return res.status(400).json({
+            error: error instanceof Error ? error.message : "Erro interno"
+        });
+    }
 }
