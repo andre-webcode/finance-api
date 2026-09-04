@@ -37,6 +37,7 @@ export const getRevenues = async (req: ExtendedRequest, res: Response) => {
 }
 
 export const revenuePut = async (req: ExtendedRequest, res: Response) => {
+    console.log("BODY RECEBIDO:", req.body);
     const { id } = req.params;
 
     try {

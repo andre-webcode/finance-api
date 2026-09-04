@@ -25,13 +25,12 @@ export const expenseGet = async (req: ExtendedRequest, res: Response) => {
     if (!req.user) {
         return res.status(401).json({ error: 'Usuario nao autenticado' })
     }
-
     const expenses = await getExpenses(req.user.id);
-
     return res.json(expenses);
 }
 
 export const expensePut = async (req: ExtendedRequest, res: Response) => {
+    console.log("BODY RECEBIDO NO BACKEND:", req.body);
     const { id } = req.params;
 
     try {
@@ -41,10 +40,7 @@ export const expensePut = async (req: ExtendedRequest, res: Response) => {
             ...req.body
         });
 
-        return res.json({
-            message: "Despesa atualizada com sucesso",
-            expense
-        });
+        return res.json(expense);
 
     } catch (error) {
         return res.status(400).json({
@@ -55,6 +51,11 @@ export const expensePut = async (req: ExtendedRequest, res: Response) => {
 
 export const expenseDelete = async (req: ExtendedRequest, res: Response) => {
     const { id } = req.params;
+
+    console.log("DELETE:", {
+        id,
+        userId: req.user?.id,
+    });
 
     try {
         const expense = await deleteExpense(

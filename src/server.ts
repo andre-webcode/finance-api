@@ -12,6 +12,6 @@ server.use(helmet())
 server.use(mainRouter);
 
 
-server.listen(3000, () => {
-    console.log('Servidor rodando.....')
+server.listen(3001, () => {
+    console.log('Servidor rodando em 3001')
 });
