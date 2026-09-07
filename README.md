@@ -1,4 +1,4 @@
-# Finance — Backend
+# Finance API
 
 API REST de um sistema financeiro desenvolvida para gerenciamento de usuários, receitas e despesas.
 
@@ -31,12 +31,15 @@ O backend é responsável pela autenticação dos usuários, regras de negócio,
 * JSON Web Token (JWT)
 * bcrypt
 * Zod
+* Helmet
+* CORS
+* tsx
 
 ## Arquitetura
 
-A API foi organizada separando responsabilidades entre rotas, controllers, services, middlewares e acesso ao banco de dados.
+A API foi organizada separando as responsabilidades entre rotas, controllers, services, middlewares, schemas e acesso ao banco de dados.
 
-```text id="v9r2xk"
+```text
 Cliente
    ↓
 Routes
@@ -52,6 +55,34 @@ Prisma
 PostgreSQL
 ```
 
+## Estrutura do projeto
+
+```text
+prisma/
+└── schema.prisma
+
+src/
+├── controllers/
+├── libs/
+├── middleware/
+├── routes/
+├── schemas/
+├── services/
+├── types/
+└── server.ts
+```
+
+### Principais responsabilidades
+
+* `controllers/` — recebe as requisições e retorna as respostas da API.
+* `services/` — concentra as regras de negócio.
+* `routes/` — define as rotas e os endpoints da API.
+* `middleware/` — executa verificações antes das requisições chegarem aos controllers.
+* `schemas/` — responsável pela validação dos dados.
+* `libs/` — reúne funcionalidades e configurações auxiliares.
+* `types/` — contém as tipagens utilizadas pela aplicação.
+* `prisma/` — contém o schema e as configurações relacionadas ao banco de dados.
+
 ## Autenticação
 
 A autenticação utiliza **JWT (JSON Web Token)**.
@@ -60,13 +91,13 @@ Após realizar o login, o usuário recebe um token que é utilizado para acessar
 
 O middleware de autenticação verifica o token antes de permitir o acesso às operações que exigem um usuário autenticado.
 
-Além disso, as receitas e despesas são associadas ao usuário autenticado.
+As receitas e despesas também são associadas ao usuário autenticado, garantindo que cada usuário tenha acesso apenas às suas próprias movimentações.
 
 ## Validação
 
-Os dados de autenticação são validados utilizando **Zod** antes de serem processados pela aplicação.
+Os dados recebidos pela API são validados utilizando **Zod**.
 
-Isso ajuda a garantir que os dados recebidos pela API estejam de acordo com o formato esperado.
+A validação acontece antes dos dados serem processados pela aplicação, ajudando a garantir que as informações estejam no formato esperado.
 
 ## Banco de dados
 
@@ -74,7 +105,7 @@ O projeto utiliza **PostgreSQL** como banco de dados e **Prisma ORM** para comun
 
 Principais modelos:
 
-```text id="p7x4kc"
+```text
 User
  ├── Revenue
  └── Expense
@@ -86,7 +117,7 @@ Representa os usuários cadastrados no sistema.
 
 ### Revenue
 
-Representa as receitas cadastradas pelo usuário.
+Representa as receitas cadastradas pelos usuários.
 
 Principais informações:
 
@@ -98,7 +129,7 @@ Principais informações:
 
 ### Expense
 
-Representa as despesas cadastradas pelo usuário.
+Representa as despesas cadastradas pelos usuários.
 
 Principais informações:
 
@@ -114,14 +145,14 @@ A API possui rotas relacionadas à autenticação e às movimentações financei
 
 ### Autenticação
 
-```text id="q1a8hf"
+```text
 POST /signup
 POST /signin
 ```
 
 ### Receitas
 
-```text id="z5r1jp"
+```text
 POST /revenue
 GET /revenue
 PUT /revenue/:id
@@ -130,7 +161,7 @@ DELETE /revenue/:id
 
 ### Despesas
 
-```text id="c8m4vt"
+```text
 POST /expense
 GET /expense
 PUT /expense/:id
@@ -139,70 +170,66 @@ DELETE /expense/:id
 
 As rotas de movimentações financeiras são protegidas por autenticação.
 
-## Estrutura do projeto
+## Variáveis de ambiente
 
-A aplicação segue uma organização baseada na separação de responsabilidades:
+Crie um arquivo `.env` na raiz do projeto e configure as variáveis necessárias para a aplicação.
 
-```text id="n4q7ws"
-src/
-├── controllers/
-├── services/
-├── routes/
-├── middlewares/
-├── libs/
-└── types/
+Entre elas estão as configurações utilizadas para conexão com o banco de dados e autenticação.
 
-prisma/
-└── schema.prisma
-```
+> Não compartilhe os valores das variáveis de ambiente, principalmente chaves secretas e credenciais do banco de dados.
 
-## Como executar
+## Instalação
 
 Clone o repositório:
 
-```bash id="j2f6pa"
+```bash
 git clone <URL_DO_REPOSITORIO>
 ```
 
 Entre na pasta do projeto:
 
-```bash id="r7k3md"
-cd <NOME_DO_PROJETO>
+```bash
+cd finance-api
 ```
 
 Instale as dependências:
 
-```bash id="x8c1qn"
+```bash
 npm install
 ```
 
-## Variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto e configure as variáveis necessárias para a aplicação, incluindo a conexão com o PostgreSQL e a chave utilizada para autenticação JWT.
-
 ## Prisma
 
-Depois de configurar o banco de dados, execute as migrations:
+Após configurar o banco de dados, execute as migrations:
 
-```bash id="a6t9we"
+```bash
 npx prisma migrate dev
 ```
 
 Gere o Prisma Client:
 
-```bash id="f3k8zr"
+```bash
 npx prisma generate
 ```
 
 ## Executando a API
 
-Inicie o servidor utilizando o script configurado no projeto:
+Para iniciar o servidor em ambiente de desenvolvimento:
 
-```bash id="m5v2qd"
+```bash
 npm run dev
 ```
 
-A API ficará disponível na porta configurada para o servidor.
+O comando utiliza `tsx` para executar o arquivo `src/server.ts` e reinicia automaticamente o servidor quando alterações são detectadas.
+
+## Segurança
+
+O projeto utiliza algumas ferramentas para aumentar a segurança da API:
+
+* `helmet` para configuração de headers de segurança.
+* `cors` para controle de acesso entre origens.
+* `bcrypt` para proteção das senhas.
+* `jsonwebtoken` para autenticação baseada em tokens.
 
 ## Conceitos aplicados
 
@@ -213,18 +240,19 @@ Durante o desenvolvimento foram aplicados conceitos importantes de desenvolvimen
 * Node.js
 * Express
 * TypeScript
-* Middlewares
 * Controllers
 * Services
+* Middlewares
+* Validação de dados
 * JWT
 * Hash de senhas
-* Validação de dados
 * Prisma ORM
 * Relacionamentos entre entidades
 * PostgreSQL
+* Migrations
 * Autorização baseada no usuário autenticado
 * Tratamento de erros
-* Migrations
+* Segurança de API
 
 ## Objetivo
 
